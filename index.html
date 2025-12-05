@@ -313,13 +313,13 @@
       inset: 0;
       pointer-events: none;
       overflow: hidden;
-      z-index: 10; /* unter der Karte */
+      z-index: 9999; /* unter der Karte */
     }
 
     .snowflake {
       position: absolute;
       top: -10vh;
-      font-size: 0.9rem;
+      font-size: 1.4rem;
       color: rgba(248, 250, 252, 0.9);
       text-shadow: 0 0 8px rgba(148, 163, 184, 0.9);
       animation-name: snow-fall, snow-sway;
@@ -391,6 +391,7 @@
       .app {
         padding: 1.4rem 1.2rem 1.6rem;
         border-radius: 1.2rem;
+        z-index: 1;
       }
 
       h1 {
