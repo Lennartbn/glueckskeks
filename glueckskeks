@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Weihnachts-Glückskeks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #111827;
+      --accent: #fbbf24;
+      --accent-soft: rgba(251, 191, 36, 0.14);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --error: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1e293b, #020617 55%);
+      color: var(--text);
+      padding: 1.5rem;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      background: linear-gradient(
+        145deg,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.9)
+      );
+      border-radius: 1.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      padding: 1.75rem 1.6rem 1.9rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0, rgba(248, 250, 252, 0.06), transparent 55%),
+        radial-gradient(
+          circle at 100% 0,
+          rgba(251, 191, 36, 0.16),
+          transparent 60%
+        );
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background-color: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent), #f97316);
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.7);
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      line-height: 1.2;
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+    }
+
+    .form-row {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background-color: rgba(15, 23, 42, 0.95);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+        linear-gradient(135deg, #9ca3af 50%, transparent 50%);
+      background-position: calc(100% - 16px) calc(50% - 3px),
+        calc(100% - 11px) calc(50% - 3px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.55);
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .cookie-zone {
+      margin-top: 1.3rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 1.25rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), #020617);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.6;
+      background-image: radial-gradient(circle, rgba(248, 250, 252, 0.12) 1px, transparent 0);
+      background-size: 18px 18px;
+      mix-blend-mode: screen;
+    }
+
+    .cookie-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7rem;
+      text-align: center;
+    }
+
+    .cookie-icon-wrapper {
+      width: 68px;
+      height: 68px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #fed7aa, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 0 4px rgba(15, 23, 42, 0.9),
+        0 10px 25px rgba(0, 0, 0, 0.8);
+      transform-origin: center;
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    }
+
+    .cookie-icon-wrapper.shake {
+      animation: wiggle 0.35s ease-in-out;
+    }
+
+    @keyframes wiggle {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      25% {
+        transform: rotate(-6deg) scale(1.03);
+      }
+      50% {
+        transform: rotate(5deg) scale(1.03);
+      }
+      75% {
+        transform: rotate(-3deg) scale(1.02);
+      }
+      100% {
+        transform: rotate(0deg) scale(1);
+      }
+    }
+
+    .cookie-emoji {
+      font-size: 1.9rem;
+      filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.6));
+    }
+
+    .cookie-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .btn {
+      margin-top: 0.4rem;
+      padding: 0.55rem 1.3rem;
+      border-radius: 999px;
+      border: none;
+      background-image: linear-gradient(135deg, #fbbf24, #f97316);
+      color: #111827;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow:
+        0 10px 25px rgba(248, 181, 53, 0.45),
+        0 0 0 1px rgba(15, 23, 42, 0.7);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 30px rgba(248, 181, 53, 0.6),
+        0 0 0 1px rgba(15, 23, 42, 0.6);
+      filter: brightness(1.03);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow:
+        0 6px 16px rgba(248, 181, 53, 0.45),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+    }
+
+    .btn span.arrow {
+      font-size: 1rem;
+      margin-top: 1px;
+    }
+
+    .fortune-card {
+      margin-top: 0.9rem;
+      padding: 0.8rem 0.9rem;
+      border-radius: 1rem;
+      background-color: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      text-align: left;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.22s ease-out, transform 0.22s ease-out;
+    }
+
+    .fortune-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fortune-zodiac {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .fortune-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .error {
+      margin-top: 0.65rem;
+      font-size: 0.82rem;
+      color: var(--error);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .app {
+        padding: 1.4rem 1.2rem 1.6rem;
+        border-radius: 1.2rem;
+      }
+
+      h1 {
+        font-size: 1.35rem;
+      }
+
+      .cookie-zone {
+        margin-top: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="app-inner">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Weihnachts-Glückskeks
+      </div>
+
+      <h1>Zieh deinen Weihnachts-Glückskeks ✨</h1>
+      <p class="subtitle">
+        Wähle dein Sternzeichen, klick auf den Keks – und lass dich überraschen.
+      </p>
+
+      <div class="form-row">
+        <label for="zodiac">Sternzeichen</label>
+        <select id="zodiac">
+          <option value="">Bitte auswählen …</option>
+          <option value="widder">♈ Widder (21.03 – 20.04)</option>
+          <option value="stier">♉ Stier (21.04 – 20.05)</option>
+          <option value="zwillinge">♊ Zwillinge (21.05 – 21.06)</option>
+          <option value="krebs">♋ Krebs (22.06 – 22.07)</option>
+          <option value="loewe">♌ Löwe (23.07 – 23.08)</option>
+          <option value="jungfrau">♍ Jungfrau (24.08 – 23.09)</option>
+          <option value="waage">♎ Waage (24.09 – 23.10)</option>
+          <option value="skorpion">♏ Skorpion (24.10 – 22.11)</option>
+          <option value="schuetze">♐ Schütze (23.11 – 21.12)</option>
+          <option value="steinbock">♑ Steinbock (22.12 – 20.01)</option>
+          <option value="wassermann">♒ Wassermann (21.01 – 19.02)</option>
+          <option value="fische">♓ Fische (20.02 – 20.03)</option>
+        </select>
+        <p class="hint">
+          Tipp: Ihr könnt den Link teilen – jeder bekommt einen anderen Keks,
+          auch beim gleichen Sternzeichen.
+        </p>
+      </div>
+
+      <div class="cookie-zone">
+        <div class="sparkles"></div>
+        <div class="cookie-content">
+          <div class="cookie-icon-wrapper" id="cookieIcon">
+            <span class="cookie-emoji">🍪</span>
+          </div>
+          <div class="cookie-label">Klick auf den Keks, um deine Botschaft zu öffnen</div>
+          <button class="btn" id="openButton">
+            Glückskeks öffnen
+            <span class="arrow">✨</span>
+          </button>
+
+          <div class="fortune-card" id="fortuneCard">
+            <div class="fortune-zodiac" id="fortuneZodiac"></div>
+            <div class="fortune-text" id="fortuneText"></div>
+          </div>
+
+          <div class="error" id="errorMsg" style="display: none;">
+            Bitte wähle zuerst dein Sternzeichen aus.
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Tipp: Ihr könnt den Keks so oft öffnen, bis sich der Spruch „richtig“ anfühlt 😉
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fortunes = {
+      widder: [
+        "Dieses Weihnachten schenkt dir einen Moment, in dem du merkst: Du bist viel weiter, als du glaubst ✨",
+        "Ein spontaner Einfall von dir sorgt diese Feiertage für gute Laune bei anderen 🔥",
+        "Du bekommst in den nächsten Tagen ein ehrliches Kompliment, das dich länger begleitet als du denkst 🎁"
+      ],
+      stier: [
+        "Ein ruhiger Abend mit gutem Essen wird dieses Jahr dein heimliches Weihnachts-Highlight 🕯️",
+        "Jemand schätzt deine Loyalität mehr, als er oder sie gerade zeigen kann – das kommt noch an die Oberfläche 🌟",
+        "Deine Geduld zahlt sich aus – eine Sache, die sich lange gezogen hat, kommt endlich in ruhigeres Fahrwasser ❄️"
+      ],
+      zwillinge: [
+        "Dieses Weihnachten wird ein Gespräch entstehen, das dir eine neue Perspektive öffnet 💬",
+        "Eine Nachricht, mit der du nicht rechnest, bringt dich zum Lächeln 📩",
+        "Du wirst an den Feiertagen mehr lachen, als du vorher geplant hast – und genau das braucht dein Kopf gerade 😄"
+      ],
+      krebs: [
+        "Ein kleiner, aber ehrlicher Moment von Nähe wird für dich wertvoller sein als jedes Geschenk 💙",
+        "Du darfst dieses Jahr ohne schlechtes Gewissen einfach mal weich sein – deine Energie lädt andere auf 🕯️",
+        "Ein Mensch, den du liebst, fühlt sich in deiner Nähe über die Feiertage besonders sicher 🫶"
+      ],
+      loewe: [
+        "Dieses Weihnachten wirst du einen Moment haben, in dem du im Mittelpunkt stehst – und es fühlt sich endlich richtig an ✨",
+        "Deine Wärme steckt andere an – unterschätze nicht, wie sehr du die Stimmung im Raum veränderst 🎄",
+        "Ein kleines Kompliment, das du bekommst, bleibt dir länger im Kopf, als du zugeben würdest 😌"
+      ],
+      jungfrau: [
+        "Etwas, das du sorgfältig geplant hast, geht besser auf, als du es dir ausgemalt hast 📋✨",
+        "Du darfst dir über die Feiertage auch mal erlauben, nichts zu optimieren – das Universum kommt kurz ohne deine To-do-Liste klar 😉",
+        "Jemand bemerkt, wie viel du im Hintergrund regelst, und zeigt dir dafür Dankbarkeit 🌟"
+      ],
+      waage: [
+        "Ein harmonischer Moment in einer Gruppe fühlt sich für dich dieses Jahr besonders heilsam an ⚖️",
+        "Du triffst eine Entscheidung, die sich im Nachhinein genau richtig anfühlt – auch wenn sie klein wirkt 💫",
+        "Du bekommst dieses Weihnachten die Bestätigung, dass du nicht immer allen alles recht machen musst, um geliebt zu werden 💖"
+      ],
+      skorpion: [
+        "Ein intensives Gespräch oder Blickkontakt zeigt dir, wer wirklich auf deiner Wellenlänge ist 🌌",
+        "Dieses Weihnachten bringt dir Klarheit zu einem Thema, das lange unter der Oberfläche geschwelt hat 🔥",
+        "Du bekommst ein Zeichen, dass du deiner Intuition mehr vertrauen darfst – sie lag öfter richtig, als du denkst 🕯️"
+      ],
+      schuetze: [
+        "Es kommt eine Einladung, ein spontaner Plan oder ein kleiner Ausflug, der perfekt zu deiner Energie passt 🌍",
+        "Dieses Weihnachten erinnert dich daran, wie gut es tut, frei zu atmen – innerlich wie äußerlich 🍃",
+        "Ein Witz oder Insider bringt dich so sehr zum Lachen, dass du kurz alles andere vergisst 😂"
+      ],
+      steinbock: [
+        "Du darfst dieses Jahr kurz stolz auf dich sein: Du hast mehr geschafft, als du dir zugestehst 🏔️",
+        "Ein Gespräch über Zukunft, Ziele oder Geld fühlt sich überraschend leicht an – und motiviert dich 🎯",
+        "Dieses Weihnachten erinnert dich daran, dass du nicht alles alleine tragen musst – jemand steht stärker hinter dir, als du glaubst 🤝"
+      ],
+      wassermann: [
+        "Eine ungewöhnliche Idee von dir bringt dieses Weihnachten frischen Wind in eine Runde 💡",
+        "Du wirst merken, dass eine Person dich wirklich für dein echtes Ich mag – nicht für die Rolle, die du spielst 🌌",
+        "Ein spontaner oder ‚random‘ Moment wird später zu einer deiner Lieblings-Erinnerungen an diese Feiertage ✨"
+      ],
+      fische: [
+        "Dieses Weihnachten bringt dir einen stillen Moment, in dem alles kurz weich und friedlich wirkt – genieße ihn 🌊",
+        "Eine Geste, Musik oder ein Film berührt dich mehr, als du erwartet hast – und das ist vollkommen okay 🎶",
+        "Du wirst spüren, dass deine Empathie dieses Jahr jemandem genau den Halt gibt, den er oder sie braucht 💜"
+      ]
+    };
+
+    const zodiacLabels = {
+      widder: "♈ Widder",
+      stier: "♉ Stier",
+      zwillinge: "♊ Zwillinge",
+      krebs: "♋ Krebs",
+      loewe: "♌ Löwe",
+      jungfrau: "♍ Jungfrau",
+      waage: "♎ Waage",
+      skorpion: "♏ Skorpion",
+      schuetze: "♐ Schütze",
+      steinbock: "♑ Steinbock",
+      wassermann: "♒ Wassermann",
+      fische: "♓ Fische"
+    };
+
+    const selectEl = document.getElementById("zodiac");
+    const openButton = document.getElementById("openButton");
+    const cookieIcon = document.getElementById("cookieIcon");
+    const fortuneCard = document.getElementById("fortuneCard");
+    const fortuneZodiac = document.getElementById("fortuneZodiac");
+    const fortuneText = document.getElementById("fortuneText");
+    const errorMsg = document.getElementById("errorMsg");
+
+    function getRandomFortuneFor(sign) {
+      const list = fortunes[sign];
+      if (!list || list.length === 0) return null;
+      const index = Math.floor(Math.random() * list.length);
+      return list[index];
+    }
+
+    openButton.addEventListener("click", () => {
+      const sign = selectEl.value;
+
+      // Reset error
+      errorMsg.style.display = "none";
+
+      if (!sign || !fortunes[sign]) {
+        errorMsg.style.display = "block";
+        fortuneCard.classList.remove("visible");
+        return;
+      }
+
+      // Cookie animation
+      cookieIcon.classList.remove("shake");
+      void cookieIcon.offsetWidth; // trigger reflow
+      cookieIcon.classList.add("shake");
+
+      const fortune = getRandomFortuneFor(sign);
+
+      if (!fortune) {
+        errorMsg.textContent = "Für dieses Sternzeichen ist gerade kein Spruch hinterlegt.";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      fortuneZodiac.textContent = zodiacLabels[sign] || "Dein Sternzeichen";
+      fortuneText.textContent = fortune;
+
+      // Show card with small delay for effect
+      fortuneCard.classList.remove("visible");
+      setTimeout(() => {
+        fortuneCard.classList.add("visible");
+      }, 130);
+    });
+  </script>
+</body>
+</html>
